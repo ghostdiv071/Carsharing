@@ -1,0 +1,167 @@
+swagger: "2.0"
+info:
+  description: "Проект по курсу \"Технологии программирования\"\r\n
+  Исполнители: Калиткин Андрей и Минаков Александр"
+  version: "1.0.0"
+  title: "Каршеринг"
+basePath: "/api"
+tags:
+- name: "auth"
+  description: "Контроллер авторизации сотрудников и клиентов"
+
+paths:
+  /auth/pass:
+    post:
+      tags:
+      - "auth"
+      summary: "Авторизация сотрудника по логину и паролю"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Объект, содержащий логин и пароль сотрудника "
+        required: true
+        schema:
+          $ref: "#/definitions/LoginOptionsDto"
+      responses:
+        "200":
+          description: "Сотрудник авторизован"
+          schema:
+            $ref: "#/definitions/AuthorizedUserDto"
+        "401":
+          description: "Логин не найден"
+        "403":
+          description: "Неверный пароль" 
+  /auth/sendSMS:
+    post:
+      tags:
+      - "auth"
+      summary: "Отправка СМС с кодом на указанный номер телефона"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Объект с номером телефона"
+        required: true
+        schema:
+          $ref: "#/definitions/SMSRequestDto"
+      responses:
+        "200":
+          description: "СМС было отправлено"
+        "400":
+          description: "Невалидный номер телефона"
+        "429":
+          description: "Отправлено слишком много СМС" 
+  /auth/authSMS:
+    post:
+      tags:
+      - "auth"
+      summary: "Авторизация клиента по коду из SMS"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Объект, содержащий номер телефона клиента и код из SMS"
+        required: true
+        schema:
+          $ref: "#/definitions/CustomerLoginOptionsDto"
+      responses:
+        "200":
+          description: "Сотрудник авторизован"
+          schema:
+            $ref: "#/definitions/AuthorizedCustomerDto"
+        "400":
+          description: "Невалидный номер телефона"
+        "403":
+          description: "Неверный код"           
+
+# securityDefinitions:
+#   api_key:
+#     type: "apiKey"
+#     name: "api_key"
+#     in: "header"
+#   token:
+#     type: "apiKey"
+#     name: "token"
+#     in: "header"
+
+definitions:
+  LoginOptionsDto:
+    type: "object"
+    properties:
+      login:
+        type: "string"
+        description: "Логин сотрудника"
+      password:
+        type: "string"
+        description: "Пароль сотрудника"
+  CustomerLoginOptionsDto:
+    type: "object"
+    properties:
+      phoneNumber:
+        type: "string"
+        description: "Номер телефона пользователя"
+      code:
+        type: "string"
+        description: "Код из СМС"        
+  SMSRequestDto:
+    type: "object"
+    properties:
+      phoneNumber:
+        type: "string"
+        description: "Номер телефона на +7 или 8 в любом формате"
+  AuthorizedUserDto:
+    type: "object"
+    properties:
+      userDto:
+        $ref: "#/definitions/UserDto"
+      tokenData:
+        type: "string"
+        description: "JWT токен"
+      authorities:
+        type: "array"
+        items:
+          type: "string"
+        description: "Перечень прав сотрудника"
+  AuthorizedCustomerDto:
+    type: "object"
+    properties:
+      customerDto:
+        $ref: "#/definitions/CustomerDto"
+      tokenData:
+        type: "string"
+        description: "JWT токен"
+  UserDto:
+    type: "object"
+    properties:
+      id:
+        type: "number"
+        description: "ID сотрудника"
+      name:
+        type: "string"
+        description: "Имя сотрудника"
+      roles:
+        type: "string"
+        description: "Права сотрудника через запятую"
+  CustomerDto:
+    type: "object"
+    properties:
+      id:
+        type: "number"
+        description: "ID клиента"
+      name:
+        type: "string"
+        description: "Имя (никнейм) клиента"
+      phoneNumber:
+        type: "string"
+        description: "Номер телефона клиента"
+      selfieFilename:
+        type: "string"
+        description: "Имя загруженного файла с селфи клиента"
+      profileConfirmed:
+        type: "boolean"
+        description: "Подтверждён ли аккаунт"
+      bannedUntil:
+        type: "string"
+        description: "Время окончания блокировки аккаунта клиента"
+      
+externalDocs:
+  description: "Документация проекта"
+  url: "https://github.com/ghostdiv071/Carsharing"
