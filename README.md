@@ -13,5 +13,5 @@
 ## Ссылки
 * [Trello](https://is.gd/LLIIIL)
 * [Miro](https://miro.com/app/board/o9J_lP1LEJM=/)
-* [Мобильное приложение](https://github.com/ghostdiv071/carsharing_mobile)
 * [Бэкенд](https://github.com/ankalitkin/carsharing-backend)
+* [Фронтэнд](https://github.com/ankalitkin/carsharing-frontend)
